@@ -1,1 +1,5 @@
 temp.py
+my_app.log
+logs/app.logs
+output/*
+__pycache__/*
