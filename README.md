@@ -9,7 +9,3 @@
 - [x] Extract
 - [ ] Transform
 - [ ] Load
-- [ ] Saturn
-- [ ] Uranus
-- [ ] Neptune
-- [ ] Comet Haley
