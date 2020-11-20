@@ -3,3 +3,5 @@ my_app.log
 logs/app.logs
 output/*
 __pycache__/*
+sales_tran/*
+pytest/__pycache__/*
