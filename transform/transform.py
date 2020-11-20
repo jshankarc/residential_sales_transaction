@@ -9,7 +9,7 @@ import pandas as pd
 
 class Transform:
 
-    def __init__(self, file_name):
+    def __init__(self):
         """[summary]
 
         Args:
@@ -101,5 +101,5 @@ class Transform:
 
 
 if __name__== '__main__':
-    trans = Transform('configs/config.ini')
+    trans = Transform()
     trans.transform()

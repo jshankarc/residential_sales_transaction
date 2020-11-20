@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-
+import sys
 class Configuration: 
 
     CONFIG_FILE_PATH = 'configs/config.ini'
@@ -14,7 +14,7 @@ class Configuration:
                 self.config = self.config_object["WEBSITE_INFO"]
         except FileNotFoundError:
             # self.log.error("Configuration File Does not exist in the root path {}".format(LoadConfiguration.CONFIG_FILE_PATH))
-            print("Configuration File Does not exist in the root path {}".format(Configuration.CONFIG_FILE_PATH))
+            print("Configuration File Does not exist in the root path {}".format(Configuration.CONFIG_FILE_PATH), file=sys.stderr)
   
     # a method for printing data members 
     def getConfigValue(self, key):
@@ -26,12 +26,10 @@ class Configuration:
         Returns:
             [type]: [description]
         """
-        # self.log.debug("getConfigValue: Key: {}, Value: {}".format(key,self.config[key]))
-        # print("getConfigValue: Key: {}, Value: {}".format(key,self.config[key]))
+        # print("getConfigValue: Key: {}, Value: {}".format(key,self.config[key]), file=sys.stdout)
         return self.config[key]
 
  
 if __name__== '__main__':
-    
     trans = Configuration()
     trans.getConfigValue('url')

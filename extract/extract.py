@@ -7,8 +7,9 @@ from zipfile import ZipFile
 import requests as req
 import os
 
-class Extract: 
+from aws_handler import aws_s3_handler as ah
 
+class Extract: 
 
     def __init__(self):
         """
@@ -20,7 +21,6 @@ class Extract:
         self.output_dir = self.config.getConfigValue('OUTPUT_DIR')
         self.cert = self.config.getConfigValue('CERT')
 
-
     def build_url(self):
         """
         Helper method to construct download url based on the specifications
@@ -30,8 +30,8 @@ class Extract:
 
         # url merge
         self.url_construct = ''.join(url)
-        self.url_construct = 'https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/Downloads/PPR-ALL.zip/$FILE/PPR-ALL.zip'
-
+        # self.url_construct = 'https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/Downloads/PPR-ALL.zip/$FILE/PPR-ALL.zip'
+        self.log.info(self.url_construct)
         return self.url_construct
     
 
@@ -43,39 +43,37 @@ class Extract:
         self.file_name = self.donwload_url.split('/')[-1]
 
         try:
-            output = req.get(self.donwload_url, verify=self.cert)
+            output = req.get(self.donwload_url, verify=self.cert, stream = True)
+            with open(self.output_dir + self.file_name.split('/')[-1], 'wb') as f:
+                f.write(output.content)
         except ConnectionError:
             self.log.error('{}:: Connection Error to the server: URL: {}'.format(self.__class__,self.donwload_url))
+            return
 
-
-        with open(self.output_dir + self.file_name.split('/')[-1], 'wb') as f:
-            f.write(output.content)
-        
         self.log.info('{}:: Download Completed: URL: {}'.format(self.__class__,self.file_name))
+
 
     
     def extract(self):
         """
         Unzip if zip file downloaded
         """
-        
         self.download()
+
+        awsObj = ah.AWSHandle()
+
+        awsObj.upload_file(self.output_dir + self.file_name)
 
         if(self.donwload_url.endswith('.zip')):
             with ZipFile(self.output_dir + self.file_name, 'r') as zip:
                 zip.extractall(self.output_dir)
-                self.log.info('EXTRACT:: Unzip Completed')
+                # delete file once it is data is extracted into the directory
+                os.remove(self.output_dir + self.file_name)
+                self.log.info('EXTRACT:: Unzip Completed and deleted file')
         
-        # delete file once it is data is extracted into the directory
-        if os.path.exists(self.output_dir + self.file_name):
-            os.remove(self.output_dir + self.file_name)
-        else:
-            self.log.warning('File does exists to delete: Name: {}'.format(self.file_name))
-
 
 if __name__ == '__main__':
     ext = Extract()
-    ext.load_config()
     ext.extract()
 
 

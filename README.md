@@ -33,6 +33,9 @@ The aim of the project is to develop an END-to-End ETL process. The process data
 
 [Docker - Youtube - Channel: *SelfTuts*](https://www.youtube.com/watch?v=prlixoDIfrc&ab_channel=SelfTuts)
 
+[Docker - AWS Container](https://medium.com/@niklongstone/how-to-build-an-aws-lambda-function-with-python-3-7-the-right-way-21888e2edbe8)
+
+[Flask (HTML Template) - Youtube - Channel: *freeCodeCamp.org*](https://www.youtube.com/watch?v=Z1RJmh_OqeA&ab_channel=freeCodeCamp.org)
 
 
 ### NOTE: Best Object Oriented Programming standards are not implemented. The JAVA project design principle are followed. 

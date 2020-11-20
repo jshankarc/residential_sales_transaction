@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+# header
+{% block head %}
+
+<title>Template</title>
+
+{% endblock %}
+
+
+# body
+{% block body %}
+
+<h1>Geowox</h1>
+<h2>Rethinking property valuations</h2>
+
+
+
+<!-- <label for="meeting-time">Choose a time for your appointment:</lab
+    max="{{variables}}"> -->
+
+<h3>Initiate the process</h3>
+<form action="/job" method="GET" target="_blank">
+    <input type="radio" id="bulk" name="jobtype" value="bulk">
+    <label for="bulk">Bulk Upload</label><br>
+    <input type="radio" id="monthly" name="jobtype" value="bulk">
+    <label for="monthly">Monthly job</label>
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock%}
