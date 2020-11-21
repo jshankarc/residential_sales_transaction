@@ -1,8 +1,8 @@
 # custom modules to handle configuration and logs
 import configuration as configs
 import logconfig as logger
-import transform_helper as thelper
 
+from transform.transform_helper import Transform_helper
 import os
 import pandas as pd
 
@@ -18,7 +18,7 @@ class Transform:
         self.config = configs.Configuration()
         self.log = logger.CustomLogger(__name__).get_logger()
         self.output_dir = self.config.getConfigValue('OUTPUT_DIR')
-        self.th = thelper.Transform_helper()
+        # Transform_helper = thelper.Transform_helper()
 
     def read_files(self):
         """[summary]
@@ -33,14 +33,14 @@ class Transform:
 
     def dataframeTypeConvertion(self, df):
         # convert object to float type
-        df = self.th.convert_dtype_to_float_type(df, ['sales_value'])
+        df = Transform_helper.convert_dtype_to_float_type(df, ['sales_value'])
 
         # convert date to mm-dd-yyyy standard
         # function help us to handle the convertion as required
-        df = self.th.convert_custom_date(df, ['sales_date'])
+        df = Transform_helper.convert_custom_date(df, ['sales_date'])
 
         # convert object to category type
-        df = self.th.convert_object_to_cat_type(df, ['county'])
+        df = Transform_helper.convert_object_to_cat_type(df, ['county'])
 
         return df
 
@@ -55,7 +55,7 @@ class Transform:
 
     def mapToBoolean(self, df):
         # map YES/NO to 1/0 type
-        df = self.th.map_boolean(df, ['not_full_market_price_ind', 'vat_exclusion_ind'])
+        df = Transform_helper.map_boolean(df, ['not_full_market_price_ind', 'vat_exclusion_ind'])
 
         self.log.info(df.dtypes)
         # map new/second-hand properties to 1/0
