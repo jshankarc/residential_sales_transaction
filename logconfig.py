@@ -11,37 +11,39 @@ class CustomLogger:
     FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 
     def __init__(self, logger_name):
+        """Load configuration upon object creating
+
+        Args:
+            logger_name (String): Class Name to print in log file
+        """
         self.logger_name = logger_name
         self.config = configs.Configuration()
 
     def get_console_handler(self):
-        """[summary]
+        """This helps print message on console 
 
         Returns:
-            [type]: [description]
+            Object: Console handler object
         """
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setFormatter(CustomLogger.FORMATTER)
         return console_handler
 
     def get_file_handler(self):
-        """[summary]
+        """load logs messages to a file
 
         Returns:
-            [type]: [description]
+            Object: File handler object
         """
         file_handler = TimedRotatingFileHandler(self.config.getConfigValue('LOG_FILE_PATH'), when='midnight')
         file_handler.setFormatter(CustomLogger.FORMATTER)
         return file_handler
 
     def get_logger(self):
-        """[summary]
-
-        Args:
-            logger_name ([type]): [description]
+        """Logger object handler
 
         Returns:
-            [type]: [description]
+            Object: Logger object
         """
         logger = logging.getLogger(self.logger_name)
         logger.setLevel(logging.DEBUG) # better to have too much log than not enough

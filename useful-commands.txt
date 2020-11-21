@@ -1,0 +1,35 @@
+## create bucket
+aws s3api create-bucket --bucket residential-sales-transaction-1 --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+
+## enable versioning
+aws s3api put-bucket-versioning --bucket residential-sales-transaction --versioning-configuration Status=Enabled
+
+
+aws s3api get-object --bucket residential-sales-transaction --key s3_folder/file.txt --range bytes=0-1000000 tmp_file.txt && head tmp_file.txt
+
+
+import requests
+requests.get('https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/Downloads/PPR-ALL.zip/$FILE/PPR-ALL.zip','/app/configs/propertypriceregister-chain.crt')
+
+
+docker run --rm -it -p 8088:8088 -e AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=AWS_DEFAULT_REGION  residentialsalestransaction
+
+
+import requests
+requests.get('https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/Downloads/PPR-ALL.zip/$FILE/PPR-ALL.zip','/app/configs/propertypriceregister-chain.crt')
+
+docker run --rm -it -p 8088:8088 -e AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=AWS_DEFAULT_REGION  residentialsalestransaction
+
+docker run --rm -it -p 8088:8088 -e AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY  residentialsalestransaction
+
+docker run --rm -it -p 8088:8088 -v ~/.aws/config:~/.aws/config  residentialsalestransaction
+
+docker run --rm -v /root/aws-cli/.aws:/root/.aws -ti aws ecr get-login --no-include-email --region us-west-2
+
+docker run --rm -it -p 8088:8088 -v /home/jay/.aws/:/root/.aws/  residentialsalestransaction
+
+docker run --rm -it -p 8088:8088 -v /home/jay/.aws/:/root/.aws/  residentialsalestransaction /bin/bash
+
+
+# curl json request
+curl -X POST -H "Content-Type: application/json"  -d @transform_request.txt  http://localhost:8088/transform/notification

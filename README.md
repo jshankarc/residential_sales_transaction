@@ -10,12 +10,19 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 
 ## Technologies
 
-- AWS - S3, SNS
+- Python
 - Flask
+- AWS - S3, SNS, SQS
+- Docker
 - VSCode Editor
 - Postman - Simulation
 
 ## Requirements
+
+- boto3
+- Flask
+- numpy
+- pandas
 
 ## Tasks
 

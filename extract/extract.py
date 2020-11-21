@@ -5,15 +5,15 @@ import logconfig as logger
 from zipfile import ZipFile
 
 import requests as req
-import os
+import shutil
+
 
 from aws_handler import aws_s3_handler as ah
 
 class Extract: 
 
     def __init__(self):
-        """
-        Initialize Configuration file 
+        """Initialize Class level objects
         """
         self.config = configs.Configuration()
         self.log = logger.CustomLogger(__name__).get_logger()
@@ -22,9 +22,12 @@ class Extract:
         self.cert = self.config.getConfigValue('CERT')
 
     def build_url(self):
+        """Construct download url based on the specifications
+
+        Returns:
+            String: Download URL
         """
-        Helper method to construct download url based on the specifications
-        """
+
         # construct url
         url = (self.url,'/PPR-2014-04-Donegal.csv/$FILE/PPR-2014-04-Donegal.csv')
 
@@ -36,9 +39,9 @@ class Extract:
     
 
     def download(self):
+        """Download files from the server
         """
-        Download files from the server
-        """
+
         self.donwload_url = self.build_url()
         self.file_name = self.donwload_url.split('/')[-1]
 
@@ -55,22 +58,22 @@ class Extract:
 
     
     def extract(self):
+        """Unzip if zip file downloaded
         """
-        Unzip if zip file downloaded
-        """
+
         self.download()
 
-        awsObj = ah.AWSHandle()
+        awsObj = ah.AWSS3Handle()
 
         awsObj.upload_file(self.output_dir + self.file_name)
 
         if(self.donwload_url.endswith('.zip')):
             with ZipFile(self.output_dir + self.file_name, 'r') as zip:
                 zip.extractall(self.output_dir)
-                # delete file once it is data is extracted into the directory
-                os.remove(self.output_dir + self.file_name)
                 self.log.info('EXTRACT:: Unzip Completed and deleted file')
-        
+
+        # delete file once it is data is extracted into the directory
+        shutil.rmtree(self.output_dir) 
 
 if __name__ == '__main__':
     ext = Extract()

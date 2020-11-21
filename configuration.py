@@ -1,11 +1,13 @@
 from configparser import ConfigParser
 import sys
+
 class Configuration: 
 
     CONFIG_FILE_PATH = 'configs/config.ini'
   
-    # default constructor 
     def __init__(self):
+        """Load configuration files upon object creating
+        """
         # Read Configuration file  
         self.config_object = ConfigParser()
         try:
@@ -18,13 +20,13 @@ class Configuration:
   
     # a method for printing data members 
     def getConfigValue(self, key):
-        """[summary]
+        """Fetches values based on the key from the configuration file
 
         Args:
-            key ([type]): [description]
+            key (String): Key
 
         Returns:
-            [type]: [description]
+            String: Value
         """
         # print("getConfigValue: Key: {}, Value: {}".format(key,self.config[key]), file=sys.stdout)
         return self.config[key]

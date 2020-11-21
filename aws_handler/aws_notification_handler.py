@@ -1,3 +1,4 @@
+# custom modules to handle configuration and logs
 import configuration as configs
 import logconfig as logger
 
@@ -6,6 +7,8 @@ import boto3
 class AWSNotificationHandler:
 
         def __init__(self):
+            """Initialzie class level variables
+            """
             self.config = configs.Configuration()
             self.log = logger.CustomLogger(__name__).get_logger()
             self.bucket_name = self.config.getConfigValue('BUCKET_NAME')

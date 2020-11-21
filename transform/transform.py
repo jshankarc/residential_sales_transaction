@@ -3,6 +3,7 @@ import configuration as configs
 import logconfig as logger
 
 from transform.transform_helper import Transform_helper
+from aws_handler import aws_s3_handler
 import os
 import pandas as pd
 
@@ -10,28 +11,33 @@ import pandas as pd
 class Transform:
 
     def __init__(self):
-        """[summary]
-
-        Args:
-            file_name ([type]): [description]
+        """Initalize Class level variable
         """
         self.config = configs.Configuration()
         self.log = logger.CustomLogger(__name__).get_logger()
         self.output_dir = self.config.getConfigValue('OUTPUT_DIR')
         # Transform_helper = thelper.Transform_helper()
 
-    def read_files(self):
-        """[summary]
+    def download_and_delete(self, file_path_list):
+        """Foward list of file paths one after the other to AWS handler 
+
+        Args:
+            file_path_list (List): List of File Locations
         """
-        files_list = []
-        for file in os.listdir(self.output_dir):
-            if file.endswith(".csv"):
-                self.log.info(os.path.join(self.output_dir, file))
-                files_list.append(os.path.join(self.output_dir, file))
-        
-        return files_list
+        obj = aws_s3_handler.AWSS3Handle()
+        for file_path in file_path_list:
+            obj.download_file(file_path)
+            obj.delete_file(file_path)
 
     def dataframeTypeConvertion(self, df):
+        """Forwards type converstion takes to Transform Helper
+
+        Args:
+            df (Dataframe): Original Dataframe
+
+        Returns:
+            Dataframe: Updated Dataframe
+        """
         # convert object to float type
         df = Transform_helper.convert_dtype_to_float_type(df, ['sales_value'])
 
@@ -45,6 +51,14 @@ class Transform:
         return df
 
     def preprocessing(self, df):
+        """Data Preprocessing operation
+
+        Args:
+            df (Dataframe): Original Dataframe
+
+        Returns:
+            Dataframe: Updated Dataframe
+        """
         # remove unused columns
         df.drop(['address', 'postal_code', 'property_size_desc'], axis = 1, inplace = True)
 
@@ -54,6 +68,14 @@ class Transform:
         return df
 
     def mapToBoolean(self, df):
+        """Forwards dataframe to Map to boolean type
+
+        Args:
+            df (Dataframe): Original Datatype
+
+        Returns:
+            Dataframe: Updated Dataframe
+        """
         # map YES/NO to 1/0 type
         df = Transform_helper.map_boolean(df, ['not_full_market_price_ind', 'vat_exclusion_ind'])
 
@@ -64,16 +86,21 @@ class Transform:
         return df
 
 
-    def transform(self):
-        """[summary]
+    def transform(self, file_path_list):
+        """It takes care of all the process involved to transform
+        1. Invoke Download and delete files on AWS
+        2. Load to Pandas Dataframe 
+        3. invoke Preprocess operation
+        4. Upload Processed data to S3 bucket
 
         Args:
-            then ([type]): [description]
+            file_path_list (List): List of file paths
         """
-        self.log.info(self.read_files())
-        for file in self.read_files():
+        self.download_and_delete(file_path_list)
+        
+        for file in file_path_list:
             # https://stackoverflow.com/a/18172249 - encoding reference
-            df = pd.read_csv('output/PPR-ALL.csv', 
+            df = pd.read_csv(file, 
                             encoding = "ISO-8859-1", 
                             names=[
                                 'sales_date', 
