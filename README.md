@@ -1,21 +1,23 @@
 # Residential Sales Transaction - ETL Process Using Python
 
-## Introduction: 
-The aim of the project is to develop an END-to-End ETL process. The process data is then used to apply machine learning models.
+## Introduction
 
-## Data Source: 
+The aim of the project is to develop an END-to-End ETL process. The resulting data will used to apply machine learning models.
+
+## Data Source
+
 [PSRA](https://www.propertypriceregister.ie/) - Property Services Regulatory Authority
 
-## Technologies 
+## Technologies
+
 - AWS - S3, SNS
 - Flask
 - VSCode Editor
 - Postman - Simulation
-- 
 
 ## Requirements
 
-## Tasks:
+## Tasks
 
 - [x] Project Folder Structure
 - [x] Configuration
@@ -23,13 +25,12 @@ The aim of the project is to develop an END-to-End ETL process. The process data
 - [ ] Extract
 - [ ] Transform
 - [ ] Load
-- [ ] Containerization - DOCKER
+- [x] Containerization - DOCKER
 - [ ] S3 Bucket Event Listener using HTTP Endpoint
 - [ ] CI/CD Pipeline
 - [ ] Documentation
 
-
-## References:
+## References
 
 [Docker - Youtube - Channel: *SelfTuts*](https://www.youtube.com/watch?v=prlixoDIfrc&ab_channel=SelfTuts)
 
@@ -37,5 +38,4 @@ The aim of the project is to develop an END-to-End ETL process. The process data
 
 [Flask (HTML Template) - Youtube - Channel: *freeCodeCamp.org*](https://www.youtube.com/watch?v=Z1RJmh_OqeA&ab_channel=freeCodeCamp.org)
 
-
-### NOTE: Best Object Oriented Programming standards are not implemented. The JAVA project design principle are followed. 
+### NOTE: Object Oriented Programming best practices are not followed instead some of the JAVA project design principle are implemented

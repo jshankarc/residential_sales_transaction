@@ -5,3 +5,5 @@ output/*
 __pycache__/*
 sales_tran/*
 pytest/__pycache__/*
+aws_handler/__pycache__/*
+extract/__pycache__/*

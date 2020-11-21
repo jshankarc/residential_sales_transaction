@@ -4,10 +4,8 @@ import logconfig as logger
 
 
 class Transform_helper:
-    
-    def __init__(self):
-        self
-    
+
+    @staticmethod    
     def convert_object_to_cat_type(self, df, columns):
         """
         Convert Object to Category datatype in pandas dataframe
@@ -17,6 +15,7 @@ class Transform_helper:
 
         return df            
 
+    @staticmethod
     def convert_dtype_to_float_type(self, df, columns):
         """
         Convert object to float datatype in pandas dataframe
@@ -26,7 +25,7 @@ class Transform_helper:
 
         return df
 
-
+    @staticmethod
     def convert_dtype_to_boolean_type(self, df, columns):
         """
         Convert object to boolean datatype in pandas dataframe
@@ -36,7 +35,7 @@ class Transform_helper:
 
         return df
 
-
+    @staticmethod
     def map_boolean(self, df, columns):
         """
         map yes/no to 1/0
@@ -44,8 +43,10 @@ class Transform_helper:
         for col in columns:
             df[col] = df[col].map({'Yes' : 1, 'No' : 0})
 
-        return df            
-
+        return df  
+        
+                 
+    @staticmethod
     def convert_custom_date(self, df, columns):
         """
         input -  dd/mm/yyyy
