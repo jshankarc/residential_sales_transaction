@@ -8,7 +8,6 @@ import sys
 from logging.handlers import TimedRotatingFileHandler
 
 class CustomLogger:
-    FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
 
     def __init__(self, logger_name):
         """Load configuration upon object creating
@@ -18,6 +17,7 @@ class CustomLogger:
         """
         self.logger_name = logger_name
         self.config = configs.Configuration()
+        self.format = configs.getConfigValue('LOG_FORMAT')
 
     def get_console_handler(self):
         """This helps print message on console 
@@ -26,7 +26,7 @@ class CustomLogger:
             Object: Console handler object
         """
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(CustomLogger.FORMATTER)
+        console_handler.setFormatter(self.format)
         return console_handler
 
     def get_file_handler(self):
@@ -36,7 +36,7 @@ class CustomLogger:
             Object: File handler object
         """
         file_handler = TimedRotatingFileHandler(self.config.getConfigValue('LOG_FILE_PATH'), when='midnight')
-        file_handler.setFormatter(CustomLogger.FORMATTER)
+        file_handler.setFormatter(self.format)
         return file_handler
 
     def get_logger(self):

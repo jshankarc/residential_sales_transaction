@@ -91,3 +91,49 @@ class Transform_helper:
             df[col] = df[col].str.replace('/', '-', regex = True)
 
         return df
+
+
+    @staticmethod
+    def add_start_month(self, df, column_name, new_column_name):
+        """Add start to a new column using sales date
+
+        Args:
+            df (Dataframe): Original Dataframe
+            columns (String): Column Name
+            new_column_name (String): New Column Name
+
+        Returns:
+            Dataframe: Updated Dataframe
+        """
+
+        df[new_column_name] = df[column_name].apply(lambda x: '01' + x[2:10])
+        
+        return df
+
+    def check_quarantine_condition(df):
+        """IRISH COUNTY CHECK and NEW HOME NOT FULL MARKET VALUE
+
+        Args:
+            df (Dataframe): Original Dataframe
+
+        Returns:
+            Dataframe: Updated Dataframe
+        """
+
+        # Irish county list
+        irish_counties_list = ['Galway', 'Leitrim', 'Mayo', 'Roscommon', 'Sligo', 'Carlow', 'Dublin', 'Kildare', 
+        'Kilkenny', 'Laois', 'Longford', 'Louth', 'Meath', 'Offaly', 'Westmeath', 'Wexford', 
+        'Wicklow', 'Clare', 'Cork', 'Kerry','Limerick', 'Tipperary', 'Waterford', 'Cavan', 'Donegal', 
+        'Monaghan', 'Antrim', 'Armagh', 'Down', 'Fermanagh', 'Londonderry', 'Tyrone']
+
+        df['quarantine_ind'] = df.county.str.lower().apply(lambda x: 0 if x in irish_counties_list else 1)
+        df['quarantine_code'] = df.quarantine_ind.apply(lambda x: "NOT IRISH COUNTIES" if x == 1 else "")
+
+        df.loc[(
+                df['not_full_market_price_ind'] == 1) & 
+                (df['vat_exclusion_ind'] == 1) & 
+                (df['new_home_ind'] == 0), 
+                ['quarantine_ind', 'quarantine_code']
+            ] = [1, 'NEW HOME NOT FULL MARKET VALUE']
+
+        return df        

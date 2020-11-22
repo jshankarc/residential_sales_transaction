@@ -65,6 +65,8 @@ class Transform:
         # remove starting special character and comma 
         df.sales_value = df.sales_value.str.replace('[^\d.]', '', regex = True)
 
+        
+
         return df
 
     def mapToBoolean(self, df):

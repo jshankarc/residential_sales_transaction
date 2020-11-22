@@ -41,7 +41,7 @@ class Application:
         file_path_list = []
         for item in record:
             file_path_list.append(item['s3']['object']['key'])
-            print(item['s3']['object']['key'], file=sys.stdout)
+            print(item['s3']['object']['key'])
         
         # print('This is standard output : {}'.format(record), file=sys.stdout)
         tran = transform.Transform()
@@ -58,7 +58,8 @@ class Application:
         """
 
         value = request.args.get('jobtype')
-        print("value is", value, file=sys.stdout)        
+        # print("value is", value, file=sys.stdout)        
+        print()
         ext = extract.Extract()
         ext.extract()
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 

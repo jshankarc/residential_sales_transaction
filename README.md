@@ -16,6 +16,7 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 - Docker
 - VSCode Editor
 - Postman - Simulation
+- Jupyter Notebook
 
 ## Requirements
 
