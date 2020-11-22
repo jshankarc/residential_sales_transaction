@@ -1,8 +1,10 @@
+from exception import InvalidRequest
 from configuration import Configuration
 import logconfig as logger
 
 import boto3
 from botocore.exceptions import ClientError
+from boto3.exceptions import S3TransferFailedError, S3UploadFailedError, Boto3Error
 
 class AWSS3Handle:
     def __init__(self):
@@ -11,13 +13,14 @@ class AWSS3Handle:
         self.config = Configuration()
         self.log = logger.CustomLogger(__name__).get_logger()
         self.bucket_name = self.config.getConfigValue('BUCKET_NAME')
-        self.s3_extract_file_path = self.config.getConfigValue('S3_EXTRACT_FILE_PATH')
+        
+        self.output_dir = self.config.getConfigValue('OUTPUT_DIR')
 
         self.s3_object = boto3.resource('s3')
         self.s3_client = boto3.client('s3')
 
     # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-uploading-files.html
-    def upload_file(self, file_path):
+    def upload_file(self, file_path, s3_directory):
         """Upload File to AWS s3 bucket
 
         Args:
@@ -29,9 +32,12 @@ class AWSS3Handle:
         file_name = file_path.split('/')[-1]
 
         try:
-            self.s3_object.meta.client.upload_file(file_path, self.bucket_name, self.s3_extract_file_path + file_name)
-        except ClientError as e:
-            self.log.error(e, 'Failed To Upload file to s3 bucket: {}'.format(file_path))
+            self.s3_object.meta.client.upload_file(file_path, self.bucket_name, s3_directory + file_name)
+        except S3UploadFailedError as e:
+            self.log.error('Failed To Upload file to s3 bucket: {}'.format(str(e)))
+            return False
+        except Boto3Error as e:
+            self.log.error('OOps, Something else in s3 bucket: {}'.format(str(e)))
             return False
         return True
  
@@ -50,10 +56,17 @@ class AWSS3Handle:
         file_name = file_path.split('/')[-1]
 
         try:
-            self.s3_object.meta.client.download_file(self.bucket_name, file_name, file_path)
-        except ClientError as e:
-            self.log.error(e.MSG_TEMPLATE, 'Failed To Download file to s3 bucket: {}'.format(file_path))
+            self.s3_client.download_file(self.bucket_name, file_path, self.output_dir + file_name)
+        except S3TransferFailedError as e:
+            self.log.error('Failed To Download file to s3 bucket: {}'.format(str(e)))
             # TODO: Trigger Notification
+            return False
+        except Boto3Error as e:
+            self.log.error('OOps somethings else, s3 bucket: {}'.format(str(e)))
+            # TODO: Trigger Notification
+            return False
+        except ClientError as e:
+            self.log.error('OOps somethings else, s3 bucket: {}'.format(str(e)))
             return False
         return True        
 
@@ -71,10 +84,17 @@ class AWSS3Handle:
             Bucket = self.bucket_name,
                 Key = file_path
             )
-        except ClientError as e:
-            self.log.error(e, 'Failed To Delete file to s3 bucket: {}'.format(file_path))
-        return False
- 
+        except S3TransferFailedError as e:
+            self.log.error('Failed To Delete file to s3 bucket: {}'.format(str(e)))
+            # TODO: Trigger Notification
+            return False
+        except Boto3Error as e:
+            self.log.error('OOps somethings else, s3 bucket: {}'.format(str(e)))
+            # TODO: Trigger Notification
+            return False
+        return True
+
+
  
 if __name__== '__main__':
     s3 = boto3.client('s3')

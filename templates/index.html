@@ -3,7 +3,7 @@
 # header
 {% block head %}
 
-<title>Template</title>
+<title>Geowox: Residential Sales Transaction : ETL </title>
 
 {% endblock %}
 
@@ -11,22 +11,112 @@
 # body
 {% block body %}
 
-<h1>Geowox</h1>
-<h2>Rethinking property valuations</h2>
 
+<div class="page-wrapper bg-color-1 p-t-165 p-b-100">
+    <div class="wrapper wrapper--w680">
+        <div class="card card-2">
+            <div class="card-body">
+                <spam class="maintitle">Geowox</spam><br/>
+                <spam class="subtitle">ETL Demo Project</spam>
+                <ul class="tab-list">
+                    <li class="tab-list__item active">
+                        <a class="tab-list__link" href="#tab1" data-toggle="tab">Extract</a>
+                    </li>
+                    <li class="tab-list__item">
+                        <a class="tab-list__link" href="#tab2" data-toggle="tab">Transform</a>
+                    </li>
+                    <li class="tab-list__item">
+                        <a class="tab-list__link" href="#tab3" data-toggle="tab">Load</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <form method="POST" action="/extract">
+                            <div class="input-group">
+                                <label class="label">County:</label>
+                                <div class="rs-select2 js-select-simple select--no-search">
+                                    <select name="county" id="county">
+                                        <option selected="selected">Dublin</option>
+                                        <option>Cork</option>
+                                        <option>Galway</option>
+                                        <option>Mayo</option>
+                                        <option>Donegal</option>
+                                        <option>Kerry</option>
+                                        <option>Tipperary</option>
+                                        <option>Clare</option>
+                                        <option>Tyrone</option>
+                                        <option>Antrim</option>
+                                        <option>Limerick</option>
+                                        <option>Roscommon</option>
+                                        <option>Down</option>
+                                        <option>Wexford</option>
+                                        <option>Meath</option>
+                                        <option>Londonderry</option>
+                                        <option>Kilkenny</option>
+                                        <option>Wicklow</option>
+                                        <option>Offaly</option>
+                                        <option>Cavan</option>
+                                        <option>Waterford</option>
+                                        <option>Westmeath</option>
+                                        <option>Sligo</option>
+                                        <option>Laois</option>
+                                        <option>Kildare</option>
+                                        <option>Fermanagh</option>
+                                        <option>Leitrim</option>
+                                        <option>Armagh</option>
+                                        <option>Monaghan</option>
+                                        <option>Longford</option>
+                                        <option>Carlow</option>
+                                        <option>Louth</option>
+                                    </select>
+                                    <div class="select-dropdown"></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="label">Date:</label>
+                                <input type="month" id="monthYear" name="monthYear">
+                            </div>
+                            <button class="btn-submit" type="submit">submit</button>
 
+                            {% if "SUCCESS" in status %}
+                            <button style="background-color:rgb(16, 230, 44)" class="btn-submit"
+                                type="submit">{{status}}</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <form method="POST" action="/transform/notification">
+                            <textarea name="transformJsonReq" id="transformJsonReq" cols=50
+                                rows=10>{"Records":[{"eventVersion":"2.1","eventSource":"aws:s3","awsRegion":"eu-west-1","eventTime":"2020-11-20T10:34:35.831Z","eventName":"ObjectCreated:Put","userIdentity":{"principalId":"AWS:AIDA4V2SM4FK3PLWYSZK2"},"requestParameters":{"sourceIPAddress":"109.255.148.149"},"responseElements":{"x-amz-request-id":"911DA941FCC1FD3A","x-amz-id-2":"ZsjMIVAYjo4PU\/5jNmJR7hfcPVHM7gJ9oZgtJutgxSqbqkAQqcpFszGJbpmvD6EUsvPT59Ab9G4\/OrrN8Qk3PWWggYudEfXs"},"s3":{"s3SchemaVersion":"1.0","configurationId":"s3-bucket-notificatoin","bucket":{"name":"residential-sales-transaction","ownerIdentity":{"principalId":"A1DOOXXCZTVHYA"},"arn":"arn:aws:s3:::residential-sales-transaction"},"object":{"key":"extract\/PPR-2014-04-Donegal.csv","size":210971,"eTag":"05a1ca85578c4289d266d334703cbf17","versionId":"glIFyzvxaWgoMQRpLPFmir1DhtfCvV7k","sequencer":"005FB79BC24158D57D"}}}]}</textarea>
+                            <button class="btn-submit" type="submit">submit</button>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="tab3">
+                        <form method="POST" action="/load/notification">
+                            <textarea name="loadJsonReq" id="loadJsonReq" cols=50
+                                rows=10>{"Records":[{"eventVersion":"2.1","eventSource":"aws:s3","awsRegion":"eu-west-1","eventTime":"2020-11-20T10:34:35.831Z","eventName":"ObjectCreated:Put","userIdentity":{"principalId":"AWS:AIDA4V2SM4FK3PLWYSZK2"},"requestParameters":{"sourceIPAddress":"109.255.148.149"},"responseElements":{"x-amz-request-id":"911DA941FCC1FD3A","x-amz-id-2":"ZsjMIVAYjo4PU\/5jNmJR7hfcPVHM7gJ9oZgtJutgxSqbqkAQqcpFszGJbpmvD6EUsvPT59Ab9G4\/OrrN8Qk3PWWggYudEfXs"},"s3":{"s3SchemaVersion":"1.0","configurationId":"s3-bucket-notificatoin","bucket":{"name":"residential-sales-transaction","ownerIdentity":{"principalId":"A1DOOXXCZTVHYA"},"arn":"arn:aws:s3:::residential-sales-transaction"},"object":{"key":"extract\/PPR-2014-04-Donegal.csv","size":210971,"eTag":"05a1ca85578c4289d266d334703cbf17","versionId":"glIFyzvxaWgoMQRpLPFmir1DhtfCvV7k","sequencer":"005FB79BC24158D57D"}}}]}</textarea>
+                            <button class="btn-submit" type="submit">submit</button>
+                        </form>
+                    </div>
 
-<!-- <label for="meeting-time">Choose a time for your appointment:</lab
-    max="{{variables}}"> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h3>Initiate the process</h3>
-<form action="/job" method="GET" target="_blank">
-    <input type="radio" id="bulk" name="jobtype" value="bulk">
-    <label for="bulk">Bulk Upload</label><br>
-    <input type="radio" id="monthly" name="jobtype" value="bulk">
-    <label for="monthly">Monthly job</label>
-    <input type="submit" value="Submit">
-</form>
+<!-- Jquery JS-->
+<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
 
+<!-- Vendor JS-->
+<script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/jquery-validate/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap-wizard/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datepicker/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datepicker/daterangepicker.js') }}"></script>
+
+<!-- Main JS-->
+<script src="{{ url_for('static', filename='js/global.js') }}"></script>
 
 {% endblock%}

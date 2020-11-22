@@ -4,7 +4,7 @@ class Transform_helper:
     """
 
     @staticmethod    
-    def convert_object_to_cat_type(self, df, columns):
+    def convert_object_to_cat_type(df, columns):
         """Convert Object to Category datatype in pandas dataframe
 
         Args:
@@ -21,7 +21,7 @@ class Transform_helper:
         return df            
 
     @staticmethod
-    def convert_dtype_to_float_type(self, df, columns):
+    def convert_dtype_to_float_type(df, columns):
         """Convert object to float datatype in pandas dataframe
 
         Args:
@@ -38,7 +38,7 @@ class Transform_helper:
         return df
 
     @staticmethod
-    def convert_dtype_to_boolean_type(self, df, columns):
+    def convert_dtype_to_boolean_type(df, columns):
         """Convert object to boolean datatype in pandas dataframe
 
         Args:
@@ -55,7 +55,7 @@ class Transform_helper:
         return df
 
     @staticmethod
-    def map_boolean(self, df, columns):
+    def map_boolean(df, columns):
         """map yes/no to 1/0
 
         Args:
@@ -73,7 +73,7 @@ class Transform_helper:
         
                  
     @staticmethod
-    def convert_custom_date(self, df, columns):
+    def convert_custom_date(df, columns):
         """Input -  dd/mm/yyyy
         Output - dd-mm-yyyy
         Since already format of the date is corrent,
@@ -94,7 +94,7 @@ class Transform_helper:
 
 
     @staticmethod
-    def add_start_month(self, df, column_name, new_column_name):
+    def add_start_month(df, column_name, new_column_name):
         """Add start to a new column using sales date
 
         Args:

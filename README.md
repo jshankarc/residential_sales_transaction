@@ -46,4 +46,6 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 
 [Flask (HTML Template) - Youtube - Channel: *freeCodeCamp.org*](https://www.youtube.com/watch?v=Z1RJmh_OqeA&ab_channel=freeCodeCamp.org)
 
+[Web Form Template Design - *Colorlib*](https://colorlib.com)
+
 ### NOTE: Object Oriented Programming best practices are not followed instead some of the JAVA project design principle are implemented

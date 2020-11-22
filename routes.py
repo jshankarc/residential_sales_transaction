@@ -1,24 +1,20 @@
 # custom modules to handle configuration and logs
+from exception import InvalidRequest
+from extract.extract import Extract
 import configuration as configs
 import logconfig as logger
 
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, jsonify
 from datetime import date
 import json
 import sys
 from extract import extract
 from transform import transform
+from load import load as ld
 
 class Application:
 
     app = Flask(__name__)
-
-    def __init__(self):
-        """Initialize Configuration file 
-        """
-        self.config = configs.Configuration()
-        self.log = logger.CustomLogger(__name__).get_logger()
-
 
     @app.route('/', methods=['GET', 'POST'])
     def index():
@@ -27,44 +23,78 @@ class Application:
         Returns:
             HTML File: Index HTML
         """
-        return render_template('index.html', variables = date.today())
+        return render_template('index.html')
+
+
+    @app.route('/extract', methods=['POST'])
+    def extract():
+        """Download file from the server 
+
+        Returns:
+            HTML File: Index HTML
+        """
+        #TODO: Form Validation
+        county = request.form.get('county')
+        monthYear = request.form.get('monthYear')
+
+        ext = Extract(county, monthYear)
+        status = 'FAILED'
+        if ext.extract():
+            print("Extraction SUCESSFUL", sys.stderr)
+            status = 'SUCCESS'
+        return render_template('index.html', status = status)
+
         
     @app.route('/transform/notification', methods=['POST'])
     def route_to_tranform():
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """Invoke Tranform process
         """
+        
+        status = 'FAILED'
+        json_data = ""
 
-        record = request.json['Records']
+        if request.form.get('transformJsonReq') == None:
+            json_data = request.json['Records']
+        else:
+            json_data = json.loads(request.form.get('transformJsonReq'))['Records']
+        
         file_path_list = []
-        for item in record:
+        for item in json_data:
             file_path_list.append(item['s3']['object']['key'])
             print(item['s3']['object']['key'])
         
-        # print('This is standard output : {}'.format(record), file=sys.stdout)
         tran = transform.Transform()
         tran.transform(file_path_list)
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        return render_template('index.html', status = status)
 
-
-    @app.route('/job/', methods=['GET'])
-    def route_trigger_jobs():
-        """[summary]
-
-        Returns:
-            [type]: [description]
+    @app.route('/load/notification', methods=['POST'])
+    def route_to_load():
+        """Invoke process
         """
+        status = 'FAILED'
+        json_data = ""
 
-        value = request.args.get('jobtype')
-        # print("value is", value, file=sys.stdout)        
-        print()
-        ext = extract.Extract()
-        ext.extract()
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        if request.form.get('loadJsonReq') == None:
+            json_data = request.json['Records']
+        else:
+            json_data = json.loads(request.form.get('loadJsonReq'))['Records']
+        
+        file_path_list = []
+        for item in json_data:
+            file_path_list.append(item['s3']['object']['key'])
+            print(item['s3']['object']['key'])
+        
+        loadobj = ld.Load(file_path_list)
+        loadobj.load()
+        return render_template('index.html', status = status)
+    
+    @app.errorhandler(InvalidRequest)
+    def handle_invalid_usage(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
 
 
 if __name__ == "__main__":
     app = Application()
-    app.app.run(debug=True, host = '0.0.0.0', port=8088)
+    app.app.run(debug=True, host = 'localhost', port=8088)

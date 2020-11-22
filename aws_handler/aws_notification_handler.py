@@ -12,7 +12,7 @@ class AWSNotificationHandler:
             self.config = configs.Configuration()
             self.log = logger.CustomLogger(__name__).get_logger()
             self.bucket_name = self.config.getConfigValue('BUCKET_NAME')
-            self.s3_extract_file_path = self.config.getConfigValue('S3_EXTRACT_FILE_PATH')
+            self.s3_extract_file_path_extract = self.config.getConfigValue('S3_FILE_PATH_EXTRACT')
 
             self.s3_object = boto3.resource('s3')
             self.s3_client = boto3.client('s3')

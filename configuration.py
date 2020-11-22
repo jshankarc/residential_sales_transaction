@@ -34,4 +34,4 @@ class Configuration:
  
 if __name__== '__main__':
     trans = Configuration()
-    trans.getConfigValue('url')
+    print(trans.getConfigValue('url'))

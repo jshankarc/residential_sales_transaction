@@ -6,6 +6,7 @@ from transform.transform_helper import Transform_helper
 from aws_handler import aws_s3_handler
 import os
 import pandas as pd
+import re
 
 
 class Transform:
@@ -16,7 +17,8 @@ class Transform:
         self.config = configs.Configuration()
         self.log = logger.CustomLogger(__name__).get_logger()
         self.output_dir = self.config.getConfigValue('OUTPUT_DIR')
-        # Transform_helper = thelper.Transform_helper()
+        self.s3_directory = self.config.getConfigValue('S3_FILE_PATH_TRANSFORM')
+        
 
     def download_and_delete(self, file_path_list):
         """Foward list of file paths one after the other to AWS handler 
@@ -26,8 +28,13 @@ class Transform:
         """
         obj = aws_s3_handler.AWSS3Handle()
         for file_path in file_path_list:
-            obj.download_file(file_path)
-            obj.delete_file(file_path)
+            if obj.download_file(file_path):
+                if obj.delete_file(file_path):
+                    return True
+                else:
+                    return False
+            else:
+                return False
 
     def dataframeTypeConvertion(self, df):
         """Forwards type converstion takes to Transform Helper
@@ -63,9 +70,7 @@ class Transform:
         df.drop(['address', 'postal_code', 'property_size_desc'], axis = 1, inplace = True)
 
         # remove starting special character and comma 
-        df.sales_value = df.sales_value.str.replace('[^\d.]', '', regex = True)
-
-        
+        df.sales_value = df['sales_value'].apply( lambda x: re.sub('[^\d.]', '', str(x)))
 
         return df
 
@@ -98,37 +103,48 @@ class Transform:
         Args:
             file_path_list (List): List of file paths
         """
-        self.download_and_delete(file_path_list)
-        
-        for file in file_path_list:
-            # https://stackoverflow.com/a/18172249 - encoding reference
-            df = pd.read_csv(file, 
-                            encoding = "ISO-8859-1", 
-                            names=[
-                                'sales_date', 
-                                'address', 
-                                'postal_code', 
-                                'county', 
-                                'sales_value', 
-                                'not_full_market_price_ind', 
-                                'vat_exclusion_ind', 
-                                'property_desc', 
-                                'property_size_desc' ], 
-                            nrows=20, 
-                            skiprows=1)
+        if self.download_and_delete(file_path_list):
+
+            for file in file_path_list:
+                # extract file name
+                file_name = file.split('/')[-1]   
+                # https://stackoverflow.com/a/18172249 - encoding reference
+                df = pd.read_csv(self.output_dir + file_name, 
+                                encoding = "ISO-8859-1", 
+                                names=[
+                                    'sales_date', 
+                                    'address', 
+                                    'postal_code', 
+                                    'county', 
+                                    'sales_value', 
+                                    'not_full_market_price_ind', 
+                                    'vat_exclusion_ind', 
+                                    'property_desc', 
+                                    'property_size_desc' ], 
+                                nrows=20, 
+                                skiprows=1)
+
+                ## preprocess dataframe
+                df = self.preprocessing(df)
+
+                # convert datatype
+                # this help in read datafame size and process it faster
+                df = self.dataframeTypeConvertion(df)
+
+                # map 1/0
+                df = self.mapToBoolean(df)
+
+                df.to_csv(self.output_dir + file_name, index = False)
 
 
-            ## preprocess dataframe
-            df = self.preprocessing(df)
-
-            # convert datatype
-            # this help in read datafame size and process it faster
-            df = self.dataframeTypeConvertion(df)
-
-            # map 1/0
-            df = self.mapToBoolean(df)
-
-
+                obj = aws_s3_handler.AWSS3Handle()
+                if obj.upload_file(self.output_dir + file_name, self.s3_directory):
+                    return True
+                else: 
+                    return False
+        else:
+            return False
+            
 if __name__== '__main__':
     trans = Transform()
     trans.transform()
