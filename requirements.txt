@@ -1,6 +1,7 @@
 argon2-cffi==20.1.0
 async-generator==1.10
 attrs==20.3.0
+autopep8==1.5.4
 backcall==0.2.0
 bleach==3.2.1
 boto3==1.16.22
@@ -41,12 +42,12 @@ pandocfilters==1.4.3
 parso==0.7.1
 pexpect==4.8.0
 pickleshare==0.7.5
-pkg-resources==0.0.0
 pluggy==0.13.1
 prometheus-client==0.9.0
 prompt-toolkit==3.0.8
 ptyprocess==0.6.0
 py==1.9.0
+pycodestyle==2.6.0
 pycparser==2.20
 Pygments==2.7.2
 pyparsing==2.4.7

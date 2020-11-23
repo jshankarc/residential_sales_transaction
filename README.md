@@ -12,7 +12,7 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 
 - Python
 - Flask
-- AWS - S3, SNS, SQS
+- AWS - S3, SNS
 - Docker
 - VSCode Editor
 - Postman - Simulation
@@ -27,16 +27,18 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 
 ## Tasks
 
-- [x] Project Folder Structure
-- [x] Configuration
+- [x] Project Structure
+- [x] Project Configuration
 - [x] Logging Configuration
-- [ ] Extract
-- [ ] Transform
-- [ ] Load
+- [x] AWS Transaction Handler
+- [ ] Global Exception Handler
+- [x] Extract
+- [x] Transform
+- [x] Load
 - [x] Containerization - DOCKER
 - [ ] S3 Bucket Event Listener using HTTP Endpoint
 - [ ] CI/CD Pipeline
-- [ ] Documentation
+- [ ] Documentation using Sphinx
 
 ## References
 

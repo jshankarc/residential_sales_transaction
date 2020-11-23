@@ -16,7 +16,7 @@
     <div class="wrapper wrapper--w680">
         <div class="card card-2">
             <div class="card-body">
-                <spam class="maintitle">Geowox</spam><br/>
+                <spam class="maintitle">Geowox</spam><br />
                 <spam class="subtitle">ETL Demo Project</spam>
                 <ul class="tab-list">
                     <li class="tab-list__item active">
@@ -27,6 +27,9 @@
                     </li>
                     <li class="tab-list__item">
                         <a class="tab-list__link" href="#tab3" data-toggle="tab">Load</a>
+                    </li>
+                    <li class="tab-list__item">
+                        <a class="tab-list__link" href="#tab4" data-toggle="tab">Schedule</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -74,7 +77,7 @@
                             </div>
                             <div class="input-group">
                                 <label class="label">Date:</label>
-                                <input type="month" id="monthYear" name="monthYear">
+                                <input type="month" id="monthYear" name="monthYear" min="2010-01" value="2020-11">
                             </div>
                             <button class="btn-submit" type="submit">submit</button>
 
@@ -98,7 +101,20 @@
                             <button class="btn-submit" type="submit">submit</button>
                         </form>
                     </div>
-
+                    <div class="tab-pane" id="tab4">
+                        <form method="POST" action="/scheduler">
+                            <div class="input-group">
+                                <label class="label">Time:</label>
+                                <input type="datetime-local" id="scheduler_time" name="scheduler_time"
+                                    min="2020-11-01T00:00" max="2020-11-30T00:00">
+                            </div>
+                            <button class="btn-submit" type="submit">submit</button>
+                            {% if "SUCCESS" in status %}
+                            <button style="background-color:rgb(16, 230, 44)" class="btn-submit"
+                                type="submit">{{status}}</button>
+                            {% endif %}
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

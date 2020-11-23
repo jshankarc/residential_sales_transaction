@@ -1,4 +1,6 @@
 # custom modules to handle configuration and logs
+import schedule
+from scheduler import Scheduler
 from exception import InvalidRequest
 from extract.extract import Extract
 import configuration as configs
@@ -11,6 +13,7 @@ import sys
 from extract import extract
 from transform import transform
 from load import load as ld
+from schedule_handler import scheduler
 
 class Application:
 
@@ -33,18 +36,34 @@ class Application:
         Returns:
             HTML File: Index HTML
         """
-        #TODO: Form Validation
+        #TODO: Form Validation, 
+        #TODO: Task status infomation
         county = request.form.get('county')
         monthYear = request.form.get('monthYear')
 
-        ext = Extract(county, monthYear)
+        ext = Extract()
         status = 'FAILED'
-        if ext.extract():
+        if ext.extract(county, monthYear):
             print("Extraction SUCESSFUL", sys.stderr)
             status = 'SUCCESS'
         return render_template('index.html', status = status)
 
+    @app.route('/scheduler', methods = ['POST'])
+    def scheduler():
+        status = 'FAILED'
+
+        schedule_info = request.form.get('scheduler_time')
+        print('Schedule INfo {}'.format(schedule_info))
+
+        time = schedule_info.split('T')[1]
+        day = schedule_info.split('T')[0].split('-')[1]
+        print('schedule time:{} and day:{}'.format(time, day))
+
+        sch = scheduler.Scheduler()
+        sch.schedule(day, time)
         
+        return render_template('index.html')
+
     @app.route('/transform/notification', methods=['POST'])
     def route_to_tranform():
         """Invoke Tranform process

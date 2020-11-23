@@ -28,9 +28,8 @@ class Extract:
         self.s3_directory = self.config.getConfigValue('S3_FILE_PATH_EXTRACT')
         self.cert = self.config.getConfigValue('CERT')
         self.request_timeout = self.config.getConfigValue('REQUEST_TIMEOUT')
-        self.year = monthYear.split('-')[0]
-        self.month = monthYear.split('-')[1]
-        self.county = county
+        self.bulkdownloadURL = self.config.getConfigValue('BULKDOWNLOAD_URL')
+
 
     def build_url(self):
         """Construct download url based on the specifications
@@ -38,14 +37,13 @@ class Extract:
         Returns:
             String: Download URL
         """
-
         # construct url
         self.file_name = 'PPR-{}-{}-{}.csv'.format(self.year, self.month, self.county)
 
         # url merge
         self.url_construct = '{}/{}/$FILE/{}'.format(self.url, self.file_name, self.file_name)
 
-        # self.url_construct = 'https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/Downloads/PPR-ALL.zip/$FILE/PPR-ALL.zip'
+        # self.url_construct = ''
         self.log.info('File DOWNLOAD URL {}'.format(self.url_construct))
 
         return self.url_construct
@@ -81,11 +79,8 @@ class Extract:
         self.log.info('Download Completed: URL: {}'.format(self.file_name))
         return True
 
-    
-    def extract(self):
-        """Unzip if zip file downloaded
-        """
-        self.donwload_url = self.build_url()
+
+    def extract_workflow(self):
 
         if self.download():
             awsobj = ah.AWSS3Handle()
@@ -105,7 +100,25 @@ class Extract:
             else:
                 return False
         else:
-            False
+            return False
+
+    
+    def extract(self, county, monthYear):
+        """Unzip if zip file downloaded
+        """
+        self.year = monthYear.split('-')[0]
+        self.month = monthYear.split('-')[1]
+        self.county = county
+
+        self.donwload_url = self.build_url()
+
+        return self.extract_workflow(self)
+
+    def extract_zip(self):
+        self.donwload_url = self.bulkdownloadURL
+
+        return self.extract_workflow(self)
+
 
 if __name__ == '__main__':
     ext = Extract()
