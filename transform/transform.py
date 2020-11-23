@@ -121,7 +121,6 @@ class Transform:
                                     'vat_exclusion_ind', 
                                     'property_desc', 
                                     'property_size_desc' ], 
-                                nrows=20, 
                                 skiprows=1)
 
                 ## preprocess dataframe
