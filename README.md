@@ -2,11 +2,41 @@
 
 ## Introduction
 
-The aim of the project is to develop an END-to-End ETL process. The resulting data will used to apply machine learning models.
+The project aim is to develop an END-to-End ETL process. The resulting data will used to apply machine learning models.
 
 ## Data Source
 
 [PSRA](https://www.propertypriceregister.ie/) - Property Services Regulatory Authority
+
+    ├── extract                              
+    └────── extract.py                       
+    ├── transform                       
+    ├────── tranform_handler.py         
+    └────── transform.py                
+    ├── load                            
+    └────── load.py                     
+    ├── aws_handler                         
+    └────── aws_notification_handler.py 
+    └────── aws_s3_handler.py           
+    ├── schedule_handler                
+    └────── safe_schedule.py            
+    └────── scheduler.py                
+    ├── static                          
+    └──────  css                            
+    └────── js                          
+    └────── vendor                          
+    ├── templates                       
+    └────── base.html                      
+    └────── index.html                  
+    ├── route.py                            
+    ├── configuration.py                
+    ├── exception.py                    
+    ├── logconfig.py                    
+    ├── Dockerfile                      
+    ├── requirements.txt                    
+    └── README.md      
+
+Other directories are pytest, output, logs
 
 ## Technologies
 
@@ -22,7 +52,7 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 
 - boto3
 - Flask
-- numpy
+- Docker
 - pandas
 
 ## Tasks
@@ -36,7 +66,9 @@ The aim of the project is to develop an END-to-End ETL process. The resulting da
 - [x] Transform
 - [x] Load
 - [x] Containerization - DOCKER
-- [ ] S3 Bucket Event Listener using HTTP Endpoint
+- [x] EC2 Deployment using Docker
+- [x] S3 Bucket Event Listener
+- [ ] Enable SNS HTTP endpoint
 - [ ] CI/CD Pipeline
 - [ ] Documentation using Sphinx
 

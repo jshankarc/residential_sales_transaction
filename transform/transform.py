@@ -67,7 +67,11 @@ class Transform:
             Dataframe: Updated Dataframe
         """
         # remove unused columns
-        df.drop(['address', 'postal_code', 'property_size_desc'], axis = 1, inplace = True)
+        df.drop(['postal_code', 'property_size_desc'], axis = 1, inplace = True)
+
+        # to lower case
+        df['address'] = df['address'].str.lower()
+        df['county'] = df['county'].str.lower()
 
         # remove starting special character and comma 
         df.sales_value = df['sales_value'].apply( lambda x: re.sub('[^\d.]', '', str(x)))
@@ -86,9 +90,8 @@ class Transform:
         # map YES/NO to 1/0 type
         df = Transform_helper.map_boolean(df, ['not_full_market_price_ind', 'vat_exclusion_ind'])
 
-        self.log.info(df.dtypes)
         # map new/second-hand properties to 1/0
-        df['new_home_ind'] = df['property_desc'].map({'New Dwelling house /Apartment' : 1, 'Second-Hand Dwelling house /Apartment' : 0})
+        df['new_home_ind'] = df['property_desc'].apply(lambda x : 1 if x == 'New Dwelling house /Apartment' else 0)
 
         return df
 
@@ -125,16 +128,27 @@ class Transform:
 
                 ## preprocess dataframe
                 df = self.preprocessing(df)
+                self.log.info('preprocessing step completed')
 
                 # convert datatype
                 # this help in read datafame size and process it faster
                 df = self.dataframeTypeConvertion(df)
+                self.log.info('dataframeTypeConvertion step completed')
 
                 # map 1/0
                 df = self.mapToBoolean(df)
+                self.log.info('mapToBoolean step completed')
+
+                # add start in 'month_start' column
+                df = Transform_helper.add_start_month(df, 'sales_date', 'month_start')
+                self.log.info('add_start_month step completed')
+
+                # check quarantine condition
+                df = Transform_helper.check_quarantine_condition(df)
+                self.log.info('check_quarantine_condition step completed')
 
                 df.to_csv(self.output_dir + file_name, index = False)
-
+                self.log.info('create cvs file in output directory step completed')
 
                 obj = aws_s3_handler.AWSS3Handle()
                 if obj.upload_file(self.output_dir + file_name, self.s3_directory):

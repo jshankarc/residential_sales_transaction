@@ -13,7 +13,7 @@ from aws_handler import aws_s3_handler as ah
 
 class Extract: 
 
-    def __init__(self, county, monthYear):
+    def __init__(self):
         """Initialize Class level objects
 
         Args:
@@ -112,12 +112,14 @@ class Extract:
 
         self.donwload_url = self.build_url()
 
-        return self.extract_workflow(self)
+        return self.extract_workflow()
 
     def extract_zip(self):
         self.donwload_url = self.bulkdownloadURL
 
-        return self.extract_workflow(self)
+        self.file_name = self.bulkdownloadURL.split('/')[-1]
+
+        return self.extract_workflow()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 # custom modules to handle configuration and logs
+import celery
 import schedule
-from scheduler import Scheduler
 from exception import InvalidRequest
 from extract.extract import Extract
 import configuration as configs
@@ -14,6 +14,8 @@ from extract import extract
 from transform import transform
 from load import load as ld
 from schedule_handler import scheduler
+import threading
+
 
 class Application:
 
@@ -53,16 +55,24 @@ class Application:
         status = 'FAILED'
 
         schedule_info = request.form.get('scheduler_time')
+        time = schedule_info.split('T')[1]
+        day = schedule_info.split('T')[0].split('-')[2]
         print('Schedule INfo {}'.format(schedule_info))
 
-        time = schedule_info.split('T')[1]
-        day = schedule_info.split('T')[0].split('-')[1]
-        print('schedule time:{} and day:{}'.format(time, day))
+        def task(**kwargs):
+            day = kwargs.get('day')
+            time = kwargs.get('time')
+            print('schedule time:{} and day:{}'.format(time, day))
+            sch = scheduler.Scheduler()
+            sch.schedule(day, time)
 
-        sch = scheduler.Scheduler()
-        sch.schedule(day, time)
-        
+        thread = threading.Thread(target=task, kwargs={'day' : day,'time': time})
+        thread.start()
+
         return render_template('index.html')
+
+
+       
 
     @app.route('/transform/notification', methods=['POST'])
     def route_to_tranform():
@@ -116,4 +126,4 @@ class Application:
 
 if __name__ == "__main__":
     app = Application()
-    app.app.run(debug=True, host = 'localhost', port=8088)
+    app.app.run(debug=True, host = '0.0.0.0', port=8088)

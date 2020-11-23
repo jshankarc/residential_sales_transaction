@@ -25,6 +25,7 @@ class AWSS3Handle:
 
         Args:
             file_path (String): Local File Path
+            s3_directory: S3 Server directory location
 
         Returns:
             Boolean: Returns True if Upload is successful
@@ -33,6 +34,7 @@ class AWSS3Handle:
 
         try:
             self.s3_object.meta.client.upload_file(file_path, self.bucket_name, s3_directory + file_name)
+            self.log.info("Upload file to S3 bucket Successful S3 path: {}".format(s3_directory + file_name))
         except S3UploadFailedError as e:
             self.log.error('Failed To Upload file to s3 bucket: {}'.format(str(e)))
             return False
@@ -57,6 +59,7 @@ class AWSS3Handle:
 
         try:
             self.s3_client.download_file(self.bucket_name, file_path, self.output_dir + file_name)
+            self.log.info("Donwload file to S3 bucket Successful S3 path: {}".format(file_path))
         except S3TransferFailedError as e:
             self.log.error('Failed To Download file to s3 bucket: {}'.format(str(e)))
             # TODO: Trigger Notification
@@ -80,10 +83,8 @@ class AWSS3Handle:
             Boolean: Return True if Donwload successful
         """
         try:
-            response = self.s3_client.delete_object(
-            Bucket = self.bucket_name,
-                Key = file_path
-            )
+            self.s3_client.delete_object(Bucket = self.bucket_name,Key = file_path)
+            self.log.info("Deletion file to S3 bucket Successful S3 path: {}".format(file_path))
         except S3TransferFailedError as e:
             self.log.error('Failed To Delete file to s3 bucket: {}'.format(str(e)))
             # TODO: Trigger Notification

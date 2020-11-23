@@ -24,13 +24,17 @@ class Load:
         Returns:
             Boolean: Success or failure
         """
-        awsObj = aws_s3_handler.AWSS3Handle()
-        if awsObj.download_file(self.s3_loadpath + self.s3_processed_file):
+        self.log.info("Load Operation")
 
-            if awsObj.download_file(self.file_path):
-                for file in self.file_path:
+        awsObj = aws_s3_handler.AWSS3Handle()
+        # download old file
+        if awsObj.download_file(self.s3_loadpath + self.s3_processed_file):
+            for file in self.file_path:
+                download_status = awsObj.download_file(file)
+                delete_status = awsObj.delete_file(file)
+                if  download_status and delete_status:
                     # extract file name
-                    file_name = self.file_path.split('/')[-1]   
+                    file_name = file.split('/')[-1]   
                     # https://stackoverflow.com/a/18172249 - encoding reference
                     df_new = pd.read_csv(self.output_dir + file_name, 
                                     encoding = "ISO-8859-1", 
@@ -44,10 +48,9 @@ class Load:
                                         'vat_exclusion_ind', 
                                         'property_desc', 
                                         'property_size_desc' ], 
-                                    nrows=20, 
                                     skiprows=1)
 
-                    df_old = pd.read_csv(self.s3_loadpath + self.s3_processed_file, 
+                    df_old = pd.read_csv(self.output_dir + self.s3_processed_file, 
                                     encoding = "ISO-8859-1", 
                                     names=[
                                         'sales_date', 
@@ -59,21 +62,16 @@ class Load:
                                         'vat_exclusion_ind', 
                                         'property_desc', 
                                         'property_size_desc' ], 
-                                    nrows=20, 
                                     skiprows=1)
 
                     pd.concat([df_new, df_old]).drop_duplicates().reset_index(drop=True)
 
-                    if awsObj.upload_file(self.s3_loadpath + self.s3_processed_file, self.s3_processed_file):
+                    if awsObj.upload_file(self.output_dir + self.s3_processed_file, self.s3_loadpath):
                         return True
                     else: 
                         return False
-
-                return True
-            else:
-                return False
-        else:
-            return False
+                else:
+                    return False     
 
 
 if __name__== '__main__':
